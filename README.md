@@ -7,5 +7,5 @@
 The scraping makes use of selenium and (chrome's) webdriver.
 Scraped reviews are meant to be appended to a [kaggle dataset](https://www.kaggle.com/jiashenliu/515k-hotel-reviews-data-in-europe).
 
-The *Windows v80* chromedriver is included in the repo. It will point to this if Windows is detected. On Linux/Mac it just looks for the chromedriver.
+The **Windows v80** chromedriver is included in the repo. It will point to this if Windows is detected. On Linux/Mac it just looks for the chromedriver.
 Please consult its documentation when an error occurs.
