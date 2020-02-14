@@ -29,7 +29,7 @@ def setup_webdriver_and_url(
     else:
         driver = webdriver.Chrome(service_log_path=r"chromedriver.log")
     try:
-        if sys.argv[1].contains("https"):
+        if "https" in sys.argv[1]:
             url = sys.argv[1]
     except IndexError:
         pass
