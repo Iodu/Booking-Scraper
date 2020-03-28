@@ -2,11 +2,11 @@ import platform
 import re
 import sys
 import time
-from dateutil.parser import parse
 from datetime import datetime
-from bs4 import BeautifulSoup
-from selenium import webdriver
 
+from bs4 import BeautifulSoup
+from dateutil.parser import parse
+from selenium import webdriver
 
 hotel = {}
 hotel_address = None
