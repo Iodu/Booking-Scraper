@@ -1,4 +1,4 @@
-> Current state: only a scraper of booking reviews.
+> Current state: a scraper of booking reviews and utilizes basic machine learning algorithms.
 
 # Big Data Booking reviews
 ## Determining whether a review is positive or negative using a machine learning trained model
