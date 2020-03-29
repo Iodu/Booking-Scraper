@@ -1,5 +1,5 @@
 USE Hotel_reviews;
-INSERT INTO reviews (
+INSERT INTO uncleaned (
     Hotel_Address,
     Additional_Number_of_Scoring,
     Review_Date,
