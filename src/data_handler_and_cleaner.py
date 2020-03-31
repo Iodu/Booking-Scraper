@@ -1,6 +1,6 @@
 import pandas as pd
 
-from helper import create_db_connection, csv_to_df
+from helper import create_db_connection, csv_to_df, sql_to_df
 
 engine = create_db_connection()
 
@@ -11,8 +11,10 @@ file_name = r"Hotel_Reviews.csv"
 # Remove all columns but Positive_Review and Negative_Review
 def _remove_all_but_review_texts(df):
     columns = list(df.columns)
-    columns.remove("Positive_Review")
-    columns.remove("Negative_Review")
+    if "Positive_Review" in columns:
+        columns.remove("Positive_Review")
+    if "Negative_Review" in columns:
+        columns.remove("Negative_Review")
     return df.drop(columns=columns)
 
 
@@ -32,23 +34,55 @@ def _concat_all_reviews_with_label_column(df):
 
     return pd.concat([renamed_positive_reviews, renamed_negative_reviews], axis=0)
 
+def uncleaned_csv_to_cleaned_df():
+    df = csv_to_df(file_name, ",")
+    df = uncleaned_df_to_cleaned_df(df)
+    return df
 
-df = csv_to_df(file_name, ",")
+def uncleaned_df_to_cleaned_df(uncleaned_df):
+    df = _remove_all_but_review_texts(uncleaned_df)
+    concated_df = _concat_all_reviews_with_label_column(df)
 
-# Write uncleaned to database
-# df.to_sql(name='uncleaned', con=engine,chunksize=1000,if_exists='replace', index=True)
+    # Remove all 'No Negative" and 'No Positive" reviews-texts
+    cleaned_df = concated_df.loc[lambda x: x["review"] != "No Negative"].loc[
+        lambda x: x["review"] != "No Positive"
+    ]
+    return cleaned_df
 
-df = _remove_all_but_review_texts(df)
+
+def uncleaned_sql_to_cleaned_df():
+    df = sql_to_df("uncleaned_reviews")
+    cleaned_df = uncleaned_df_to_cleaned_df(df)
+    return cleaned_df
 
 
-concated_df = _concat_all_reviews_with_label_column(df)
+def uncleaned_csv_to_sql():
+    df = csv_to_df(file_name, ",")
+    df.to_sql(
+        name="uncleaned_reviews",
+        con=engine,
+        chunksize=1000,
+        if_exists="replace",
+    )
 
-# Remove all 'No Negative' and 'No Positive' reviews-texts
-cleaned_df = concated_df.loc[lambda x: x["review"] != "No Negative"].loc[
-    lambda x: x["review"] != "No Positive"
-]
 
-# Write cleaned to database
-# cleaned_df.to_sql(
-#     name="cleaned", con=engine, chunksize=1000, if_exists="replace", index=True
-# )
+def cleaned_sql_to_df():
+    df = sql_to_df("cleaned_reviews")
+    return df
+
+
+def cleaned_df_to_sql(cleaned_df):
+    cleaned_df.to_sql(
+        name="cleaned_reviews",
+        con=engine,
+        chunksize=1000,
+        if_exists="replace",
+    )
+
+
+def uncleaned_sql_to_cleaned_sql():
+    cleaned_df = uncleaned_sql_to_cleaned_df()
+    cleaned_df_to_sql(cleaned_df)
+
+
+df = cleaned_sql_to_df()

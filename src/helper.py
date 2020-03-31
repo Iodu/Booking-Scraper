@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 import pandas as pd
@@ -16,6 +17,12 @@ def csv_to_df(file_name, seperator):
     file_name = r"Hotel_Reviews.csv"
     df = pd.read_csv(file_name, sep=seperator)
     df.head()
+    return df
+
+
+def sql_to_df(table_name):
+    connection = create_db_connection()
+    df = pd.read_sql_table(table_name, con=connection)
     return df
 
 
@@ -86,3 +93,4 @@ def create_single_sql_insert():
         {values}
     )
     """
+current_milli_time = lambda: int(round(time.time() * 1000))
